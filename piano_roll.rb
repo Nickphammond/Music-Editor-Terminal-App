@@ -4,9 +4,16 @@ require 'colorize'
 
 # ['']
 
+position = [25,25]
+state = 0
+
+$timer = 1
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
 
 sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2}}
+
+sheetA = {}
+
 
 def page(sheet,x,y)
     if x==0
@@ -20,31 +27,95 @@ def page(sheet,x,y)
 
             return " ".colorize(:color => :light_cyan, :background => :light_magenta)
         else
-            return '.'.colorize(:color => :light_white, :background => :white)
+            return '_'.colorize(:color => :light_white, :background => :white)
         end
 
     else
-        return '.'.colorize(:color => :light_white, :background => :white)
+        return '_'.colorize(:color => :light_white, :background => :white)
     end
             
 end
 
 
 
-def print_roll(sheet)
-    str= ''
+def cursor(pos, key)
+    if key=='w'
+        pos[1]=pos[1]-1
+        return pos
+    elsif key=='s'
+        pos[1]=pos[1]+1
+        return pos
+    elsif key=='d'
+        pos[0]=pos[0]+1
+        return pos
+    elsif key=='a'
+        pos[0]=pos[0]-1
+        return pos
+    else
+        return pos
+    end
+end
+
+
+
+def print_roll(sheet, pos)
+    str= "                                                                                 \n"+ "                                                                                 \n"+ "                                                                                 \n"
+
+
+
     for j in 0..48
         for i in 0..100
-
-            str= str + page(sheet,i,j)
+            if i==pos[0] && j==pos[1]
+                str= str +  '_'.colorize(:color => :light_white, :background => :light_cyan)
+            else
+                str= str + page(sheet,i,j)
+            end
         end
         str= str+"\n"
     end
     return str
 end
 
+
+
+
+def print_cycle(sheet, pos)
+
+    
+    output=(print_roll(sheet, pos))
+    system("clear && printf '\e[3J'")
+    print "\033[2J"
+
+    print output
+    
+    begin
+        status = Timeout::timeout(0.9) {
+            
+            str = STDIN.getch
+            
+
+            if str!='q'
+                
+                return print_cycle(sheet, cursor(pos, str))
+            elsif str == 'q'
+                return "end"
+            end
+            return nick.to_i
+        }
+    rescue
+        $timer = $timer + 1
+        puts pos[0]
+        puts pos[1]
+        return print_cycle(sheet, pos)
+    end
+    
+end
+
+
 system("clear && printf '\e[3J'")
-puts print_roll(sheetA)
+print "\033[2J"
+
+puts print_cycle(sheetA, position)
 
 # puts note_array[1]
 
