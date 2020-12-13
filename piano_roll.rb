@@ -43,6 +43,7 @@ def print_roll(sheet)
     return str
 end
 
+system("clear && printf '\e[3J'")
 puts print_roll(sheetA)
 
 # puts note_array[1]
