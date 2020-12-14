@@ -7,12 +7,12 @@ require 'colorize'
 position = [25,25]
 state = 0
 
-$timer = 1
+
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
 
-sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2}}
+sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
 
-sheetA = {}
+
 
 
 def page(sheet,x,y)
@@ -59,16 +59,15 @@ end
 
 
 def print_roll(sheet, pos)
-    str= "                                                                                 \n"+ "                                                                                 \n"+ "                                                                                 \n"
-
-
+    str = "\n\n"
 
     for j in 0..48
         for i in 0..100
             if i==pos[0] && j==pos[1]
                 str= str +  '_'.colorize(:color => :light_white, :background => :light_cyan)
             else
-                str= str + page(sheet,i,j)
+                z =page(sheet,i,j)
+                str= str + z
             end
         end
         str= str+"\n"
@@ -87,7 +86,7 @@ def print_cycle(sheet, pos)
     print "\033[2J"
 
     print output
-    
+    sleep(0.1)    
     begin
         status = Timeout::timeout(0.9) {
             
@@ -103,9 +102,7 @@ def print_cycle(sheet, pos)
             return nick.to_i
         }
     rescue
-        $timer = $timer + 1
-        puts pos[0]
-        puts pos[1]
+
         return print_cycle(sheet, pos)
     end
     
