@@ -2,14 +2,26 @@ require "timeout"
 require 'io/console'
 require 'colorize'
 
-# ['']
 
-position = [98,25]
+
+
+# position = [98,25]
 $scroll = 0
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
 
-sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
 
+# sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
+
+
+def save2(sheet)
+    return save(sheet)
+end
+
+def save(sheet)
+    str=sheet.inspect()
+    File.open("test.txt", "w"){ |f| f.write str }
+    return
+end
 
 
 
@@ -122,7 +134,20 @@ def print_cycle(sheet, pos)
         end
         return print_cycle(sheet, cursor(pos, str))
     else
-        return "end"
+        puts "Do you want to save (y/n)?"
+        ans = gets.chomp
+        if ans!='y' && ans!='n'
+            "Invalid input, please press y or n"
+        else
+            puts "blah"
+
+            if ans=='y'
+                save(sheet)
+
+            end
+            puts "Thankyou"
+            return
+        end
     end
     
     
@@ -162,7 +187,6 @@ end
 system("clear && printf '\e[3J'")
 print "\033[2J"
 
-print_cycle(sheetA, position)
+# print_cycle(sheetA, position)
 # play_back(sheetA, position)
-
 
