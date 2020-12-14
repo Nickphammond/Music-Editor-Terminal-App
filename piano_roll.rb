@@ -76,7 +76,6 @@ def print_roll(sheet, pos)
         end
         str= str+"\n"
     end
-    puts pos[0]
     return str
 end
 
@@ -91,30 +90,43 @@ def print_cycle(sheet, pos)
     print "\033[2J"
 
     print output
+    sleep(0.1) 
+     
+    str = (STDIN.getch).to_s
 
-    sleep(0.1)    
-    begin
-        status = Timeout::timeout(2) {
-            
-            str = STDIN.getch
+    if str!='q'
+        if pos[0]==99 && str=='d'
+            $scroll=$scroll+1
 
-            if str!='q'
-                if pos[0]==99 && str=='d'
-                    $scroll=$scroll+1
-  
-                elsif pos[0]==1 && str=='a' && $scroll>0
-                    $scroll=$scroll-1
-                end
-                return print_cycle(sheet, cursor(pos, str))
-            elsif str == 'q'
-                return "end"
+        elsif pos[0]==1 && str=='a' && $scroll>0
+            $scroll=$scroll-1
+        elsif str=='p'
+            return play_back(sheet, pos)
+        elsif str=='1'
+            f=pos[0]+$scroll
+            note_hash = {($note_array[pos[1]%12] + (pos[1]/12).to_s) => 2}
+            begin
+            sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
+            rescue
+                sheet["T"+f.to_s]=note_hash
             end
-            return nick.to_i
-        }
-    rescue
 
-        return print_cycle(sheet, pos)
+        elsif str=='l' 
+            f=pos[0]+$scroll
+            begin
+                note_hash=($note_array[pos[1]%12] + (pos[1]/12).to_s).to_s
+                sheet["T"+f.to_s].delete(note_hash)
+            rescue
+
+            end
+        end
+        return print_cycle(sheet, cursor(pos, str))
+    else
+        return "end"
     end
+    
+    
+    
     
 end
 
@@ -125,11 +137,10 @@ def play_back(sheet, pos)
     print "\033[2J"
 
     print output
-    sleep(0.1) 
     a=0
     
     begin
-        status = Timeout::timeout(1){
+        status = Timeout::timeout(0.001){
             str = STDIN.getch
             if str=='x'
                 a=1
@@ -151,8 +162,7 @@ end
 system("clear && printf '\e[3J'")
 print "\033[2J"
 
-# print_cycle(sheetA, position)
-play_back(sheetA, position)
+print_cycle(sheetA, position)
+# play_back(sheetA, position)
 
-# puts note_array[1]
 
