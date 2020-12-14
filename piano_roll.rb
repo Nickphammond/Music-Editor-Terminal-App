@@ -5,7 +5,7 @@ require 'colorize'
 # ['']
 
 position = [98,25]
-$state = 0
+$scroll = 0
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
 
 sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
@@ -15,7 +15,7 @@ sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T
 
 def page(sheet,x,y)
 
-    f = x + $state
+    f = x + $scroll
     if x==0
         
 
@@ -23,7 +23,7 @@ def page(sheet,x,y)
 
     elsif sheet["T"+f.to_s] != nil
 
-        
+
 
         if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
 
@@ -41,25 +41,23 @@ end
 
 
 def cursor(pos, key)
-    if pos[0]!=1 && pos[1]!=0 && pos[0]!=99 && pos[1]!=47
-        if key=='w'
-            pos[1]=pos[1]-1
-            return pos
-        elsif key=='s'
-            pos[1]=pos[1]+1
-            return pos
-        elsif key=='d'
-            pos[0]=pos[0]+1
-            return pos
-        elsif key=='a'
-            pos[0]=pos[0]-1
-            return pos
-        else
-            return pos
-        end
+    
+    if key=='w' && pos[1]!=0
+        pos[1]=pos[1]-1
+        return pos
+    elsif key=='s' && pos[1]!=47
+        pos[1]=pos[1]+1
+        return pos
+    elsif key=='d' && pos[0]!=99
+        pos[0]=pos[0]+1
+        return pos
+    elsif key=='a' && pos[0]!=1 
+        pos[0]=pos[0]-1
+        return pos
     else
         return pos
     end
+    
 end
 
 
@@ -78,6 +76,7 @@ def print_roll(sheet, pos)
         end
         str= str+"\n"
     end
+    puts pos[0]
     return str
 end
 
@@ -92,6 +91,7 @@ def print_cycle(sheet, pos)
     print "\033[2J"
 
     print output
+
     sleep(0.1)    
     begin
         status = Timeout::timeout(2) {
@@ -100,12 +100,11 @@ def print_cycle(sheet, pos)
 
             if str!='q'
                 if pos[0]==99 && str=='d'
-                    $state=$state+1
+                    $scroll=$scroll+1
   
-                elsif pos[0]==1 && str=='a' && $state>0
-                    $state=$state-1
+                elsif pos[0]==1 && str=='a' && $scroll>0
+                    $scroll=$scroll-1
                 end
-                puts $state
                 return print_cycle(sheet, cursor(pos, str))
             elsif str == 'q'
                 return "end"
@@ -120,10 +119,40 @@ def print_cycle(sheet, pos)
 end
 
 
+def play_back(sheet, pos)
+    output=(print_roll(sheet, pos))
+    system("clear && printf '\e[3J'")
+    print "\033[2J"
+
+    print output
+    sleep(0.1) 
+    a=0
+    
+    begin
+        status = Timeout::timeout(1){
+            str = STDIN.getch
+            if str=='x'
+                a=1
+            end
+            return nick.to_i
+        }
+    rescue
+    
+        if a==0
+            $scroll=$scroll+1
+            play_back(sheet, pos)
+        else
+            return print_cycle(sheet, pos)
+        end
+    end
+end
+
+
 system("clear && printf '\e[3J'")
 print "\033[2J"
 
-puts print_cycle(sheetA, position)
+# print_cycle(sheetA, position)
+play_back(sheetA, position)
 
 # puts note_array[1]
 
