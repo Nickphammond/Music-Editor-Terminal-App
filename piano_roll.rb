@@ -4,8 +4,8 @@ require 'colorize'
 
 # ['']
 
-position = [25,25]
-state = 0
+position = [98,25]
+$state = 0
 
 
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
@@ -16,14 +16,18 @@ sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T
 
 
 def page(sheet,x,y)
+
+    f = x + $state
     if x==0
         
 
         return $note_array[y%12] + (y/12).to_s + "   "
 
-    elsif sheet["T"+x.to_s] != nil
+    elsif sheet["T"+f.to_s] != nil
 
-        if sheet["T"+x.to_s][$note_array[y%12] + (y/12).to_s] != nil
+        
+
+        if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
 
             return " ".colorize(:color => :light_cyan, :background => :light_magenta)
         else
@@ -39,18 +43,22 @@ end
 
 
 def cursor(pos, key)
-    if key=='w'
-        pos[1]=pos[1]-1
-        return pos
-    elsif key=='s'
-        pos[1]=pos[1]+1
-        return pos
-    elsif key=='d'
-        pos[0]=pos[0]+1
-        return pos
-    elsif key=='a'
-        pos[0]=pos[0]-1
-        return pos
+    if pos[0]!=1 && pos[1]!=0 && pos[0]!=99 && pos[1]!=47
+        if key=='w'
+            pos[1]=pos[1]-1
+            return pos
+        elsif key=='s'
+            pos[1]=pos[1]+1
+            return pos
+        elsif key=='d'
+            pos[0]=pos[0]+1
+            return pos
+        elsif key=='a'
+            pos[0]=pos[0]-1
+            return pos
+        else
+            return pos
+        end
     else
         return pos
     end
@@ -88,13 +96,18 @@ def print_cycle(sheet, pos)
     print output
     sleep(0.1)    
     begin
-        status = Timeout::timeout(0.9) {
+        status = Timeout::timeout(2) {
             
             str = STDIN.getch
-            
 
             if str!='q'
-                
+                if pos[0]==99 && str=='d'
+                    $state=$state+1
+  
+                elsif pos[0]==1 && str=='a' && $state>0
+                    $state=$state-1
+                end
+                puts $state
                 return print_cycle(sheet, cursor(pos, str))
             elsif str == 'q'
                 return "end"
