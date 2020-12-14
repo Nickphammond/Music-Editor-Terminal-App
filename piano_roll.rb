@@ -13,13 +13,11 @@ $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C",
 # sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
 
 
-def save2(sheet)
-    return save(sheet)
-end
 
-def save(sheet)
+
+def save(sheet, file)
     str=sheet.inspect()
-    File.open("test.txt", "w"){ |f| f.write str }
+    File.open("#{file}.txt", "w"){ |f| f.write str }
     return
 end
 
@@ -94,7 +92,7 @@ end
 
 
 
-def print_cycle(sheet, pos)
+def print_cycle(sheet, pos, file)
 
     
     output=(print_roll(sheet, pos))
@@ -132,17 +130,17 @@ def print_cycle(sheet, pos)
 
             end
         end
-        return print_cycle(sheet, cursor(pos, str))
+        return print_cycle(sheet, cursor(pos, str), file)
     else
         puts "Do you want to save (y/n)?"
-        ans = gets.chomp
+        ans = $stdin.gets.chomp
         if ans!='y' && ans!='n'
             "Invalid input, please press y or n"
         else
             puts "blah"
 
             if ans=='y'
-                save(sheet)
+                save(sheet, file)
 
             end
             puts "Thankyou"
@@ -178,7 +176,7 @@ def play_back(sheet, pos)
             $scroll=$scroll+1
             play_back(sheet, pos)
         else
-            return print_cycle(sheet, pos)
+            return print_cycle(sheet, pos, file)
         end
     end
 end
