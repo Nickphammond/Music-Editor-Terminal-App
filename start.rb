@@ -18,6 +18,6 @@ else
 end
 
 
-print_cycle(sheetA, position, qfile)
+print_cycle(sheetA, position, qfile, 0)
 
 
