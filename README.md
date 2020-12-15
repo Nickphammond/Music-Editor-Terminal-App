@@ -1,3 +1,10 @@
+
+
+## 
+
+
+
+
 ## How to install and use
 
 Dependencies
@@ -7,6 +14,7 @@ Dependencies
 - timeout
 - io-console
 - wavefile
+- suitable default media player capable of playing .wav files
 
 
 To install and run
