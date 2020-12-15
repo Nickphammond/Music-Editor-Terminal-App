@@ -1,6 +1,6 @@
 require "timeout"
-require 'io/console'
-require 'colorize'
+require "io/console"
+require "colorize"
 require "wavefile"
 include WaveFile
 
@@ -294,38 +294,5 @@ def play_notes(num, chord)
 end
 
 $chord="test"
-# play_note(sample_total,frequency)
 
 
-# chord2 = {"#A1"=>2}
-
-# for i in 0..3
-#     for j in 0..11
-#         if chord2[$note_array[j] + i.to_s] == nil
-            
-#         else
-#             puts [$note_array[j] + i.to_s]
-#         end
-        
-#     end
-    
-# end
-
-
-
-# period_pos = 0.0
-# sample_array = [].fill(0.0, 0, 44100)
-# arr = [262.0, 443.2]
-# for i in 0..(44100-1)
-#     sum = 0
-#     for k in 0..arr.length()-1
-#         freq = arr[k]
-#         period_diff = freq/$sample_rate
-#         period_pos = period_pos + period_diff
-
-#         sum = sum + Math::sin($two_pi*period_pos)
-#     end
-#     sample_array[i] = sum
-# end
-
-# puts sample_array
