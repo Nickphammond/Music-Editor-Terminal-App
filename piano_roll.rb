@@ -7,6 +7,12 @@ include WaveFile
 
 $scroll = -4
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
+$two_pi = 2* Math::PI
+$sample_rate = 44100
+
+
+system("clear && printf '\e[3J'")
+print "\033[2J"
 
 def save(sheet, file)
     str=sheet.inspect()
@@ -49,7 +55,6 @@ def page(sheet,x,y, pos, state)
             on_note = " "
 
             if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
-
                 return (pos[0]==x)?on_note:off_note
             else
 
@@ -173,12 +178,25 @@ def print_cycle(sheet, pos, file, state)
 end
 
 
+
 def play_back(sheet, pos, file, state)
     output=(print_roll(sheet, pos, state))
     system("clear && printf '\e[3J'")
     print "\033[2J"
 
     print output
+
+    x = pos[0]
+    y = pos[1]
+    f = x + $scroll
+    if sheet["T"+f.to_s] != nil
+        puts "blah"
+        play_notes(41000, sheet["T"+f.to_s])
+        # if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
+            
+        #     play_note(41000,262.0)
+        # end
+    end
     
     
     begin
@@ -201,44 +219,113 @@ def play_back(sheet, pos, file, state)
 end
 
 
-system("clear && printf '\e[3J'")
-print "\033[2J"
 
 
-$two_pi = 2* Math::PI
-$sample_rate = 44100
 
-sample_total = 44100
-frequency = 262.0
 
-def basic_note(num, freq)
-    period_pos = 0.0
-    period_diff = freq/$sample_rate
 
-    sample_array = [].fill(0.0, 0, num)
-    for i in 0..(num-1)
-        sample_array[i] = Math::sin($two_pi*period_pos)
-        period_pos = period_pos + period_diff
+
+
+
+
+
+# SOUND GENERATION
+
+
+
+
+time = 1
+sample_total = $sample_rate*time
+# frequency = 262.0
+
+
+
+def basic_note(num, chord)
+    arr = []
+    for i in 0..3
+        for j in 0..11
+            if chord[$note_array[j] + i.to_s] != nil
+                arr = arr.append(262.0*(2**((23 - i*12 - j).to_f/12)))
+            end   
+        end
     end
 
-    
+
+    period_pos = 0.0
+
+
+    sample_array = [].fill(0.0, 0, num)
+    for i in 0..(num)
+        sum = 0.0
+        for k in 0..arr.length()-1
+
+            freq = arr[k]
+            period_diff = 1.0/$sample_rate
+            sum = sum + (Math::sin($two_pi*period_pos*freq)/arr.length().to_f)
+            period_pos = period_pos + period_diff
+
+        
+        end
+        sample_array[i] = sum
+        if period_pos>= 1.0
+            period_pos = 0
+        end
+    end
+
     return sample_array
 end
 
 
-def make_file(num, freq)
-    note_array=basic_note(num, freq)
+def make_file(num, chord)
+    note_array=basic_note(num, chord)
+ 
     note_data = WaveFile::Buffer.new(note_array, WaveFile::Format.new(:mono, :float, $sample_rate))
-    WaveFile::Writer.new("note.wav", WaveFile::Format.new(:mono, :pcm_16, 44100)) do |writer|
+    WaveFile::Writer.new("#{$chord}.wav", WaveFile::Format.new(:mono, :pcm_16, 44100)) do |writer|
         writer.write(note_data)
       end
 end
 
-def play_note(num, freq)
-    make_file(num, freq)
-    system("open note.wav")
-    system("rm note.wav")
+
+def play_notes(num, chord)
+    make_file(num, chord)
+    
+    system("open #{$chord}.wav")
+    # system("rm #{$chord}.wav")
 end
 
-# play_note(41000,frequency)
+$chord="test"
+# play_note(sample_total,frequency)
 
+
+# chord2 = {"#A1"=>2}
+
+# for i in 0..3
+#     for j in 0..11
+#         if chord2[$note_array[j] + i.to_s] == nil
+            
+#         else
+#             puts [$note_array[j] + i.to_s]
+#         end
+        
+#     end
+    
+# end
+
+
+
+# period_pos = 0.0
+# sample_array = [].fill(0.0, 0, 44100)
+# arr = [262.0, 443.2]
+# for i in 0..(44100-1)
+#     sum = 0
+#     for k in 0..arr.length()-1
+#         freq = arr[k]
+#         period_diff = freq/$sample_rate
+#         period_pos = period_pos + period_diff
+
+#         sum = sum + Math::sin($two_pi*period_pos)
+#     end
+#     sample_array[i] = sum
+# end
+
+# puts sample_array
