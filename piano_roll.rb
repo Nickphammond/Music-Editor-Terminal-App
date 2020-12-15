@@ -1,18 +1,12 @@
 require "timeout"
 require 'io/console'
 require 'colorize'
+require "wavefile"
+include WaveFile
 
 
-
-
-# position = [98,25]
-$scroll = 0
+$scroll = -4
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
-
-
-# sheetA = {"T1" => {" C1" => 2}, "T10" => {" B1" => 2}, "T20" => {"#A1" => 2}, "T30" => {" A1" => 2}, "T40" => {" C1" => 2}, "T50" => {" B1" => 2}, "T60" => {"#A1" => 2}, "T70" => {" A1" => 2},"T80" => {" C1" => 2}, "T90" => {" B1" => 2}, "T100" => {"#A1" => 2}, "T110" => {" A1" => 2},"T120" => {" C1" => 2}, "T130" => {" B1" => 2}, "T140" => {"#A1" => 2}, "T150" => {" A1" => 2}}
-
-
 
 
 def save(sheet, file)
@@ -28,8 +22,17 @@ def page(sheet,x,y)
     f = x + $scroll
     if x==0
         
+        str= $note_array[y%12] + (y/12).to_s + "   "
+        return str.colorize(:color => :light_black, :background => :light_yellow)
 
-        return $note_array[y%12] + (y/12).to_s + "   "
+    elsif f==-3
+        return " ".colorize(:color => :light_black, :background => :light_blue)
+    elsif f==-2
+        return " ".colorize(:color => :light_black, :background => :light_blue)
+    elsif f==-1
+        return " ".colorize(:color => :light_black, :background => :light_blue)
+    elsif f==0
+        return " ".colorize(:color => :light_black, :background => :light_blue)
 
     elsif sheet["T"+f.to_s] != nil
 
@@ -137,7 +140,6 @@ def print_cycle(sheet, pos, file)
         if ans!='y' && ans!='n'
             "Invalid input, please press y or n"
         else
-            puts "blah"
 
             if ans=='y'
                 save(sheet, file)
@@ -185,6 +187,39 @@ end
 system("clear && printf '\e[3J'")
 print "\033[2J"
 
-# print_cycle(sheetA, position)
-# play_back(sheetA, position)
+
+$two_pi = 2* Math::PI
+$sample_rate = 44100
+sample_total = 44100
+
+
+def basic_note(num)
+    period_pos = 0.0
+    period_diff = 262.0/$sample_rate
+
+    sample_array = [].fill(0.0, 0, num)
+    for i in 0..(num-1)
+        sample_array[i] = Math::sin($two_pi*period_pos)
+        period_pos = period_pos + period_diff
+    end
+
+    
+    return sample_array
+end
+
+
+def make_file(num)
+    note_array=basic_note(num)
+    note_data = WaveFile::Buffer.new(note_array, WaveFile::Format.new(:mono, :float, $sample_rate))
+    WaveFile::Writer.new("note.wav", WaveFile::Format.new(:mono, :pcm_16, 44100)) do |writer|
+        writer.write(note_data)
+      end
+end
+
+def play_file(num)
+    make_file(num)
+    system("open note.wav")
+end
+
+play_file(41000)
 
