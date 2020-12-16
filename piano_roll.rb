@@ -35,18 +35,12 @@ def page(sheet,x,y, pos, state)
 
         
 
-        if x==0
+        if x==0 
             
             str= $note_array[y%12] + (y/12).to_s + "   "
             return str.colorize(:color => :light_black, :background => :light_yellow)
 
-        elsif f==-3
-            return " ".colorize(:color => :light_black, :background => :light_blue)
-        elsif f==-2
-            return " ".colorize(:color => :light_black, :background => :light_blue)
-        elsif f==-1
-            return " ".colorize(:color => :light_black, :background => :light_blue)
-        elsif f==0
+        elsif f>= -3 && f<=0
             return " ".colorize(:color => :light_black, :background => :light_blue)
 
         elsif sheet["T"+f.to_s] != nil
@@ -160,12 +154,17 @@ def print_cycle(sheet, pos, file, state)
         puts "Do you want to save (y/n)?"
         ans = $stdin.gets.chomp
         if ans!='y' && ans!='n'
-            "Invalid input, please press y or n"
+            puts "Invalid input, please press y or n"
+            sleep(1)
+            print_cycle(sheet, pos, file, state)
         else
 
             if ans=='y'
+                if file==nil
+                    puts "Enter the name you wish to use for your file"
+                    file=gets.chomp   
+                end
                 save(sheet, file)
-
             end
             puts "Thankyou"
             return
