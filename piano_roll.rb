@@ -42,8 +42,25 @@ def page(sheet,x,y, pos, state)
                 off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
                 on_note = " "
     
-                if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
+                if (sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil)
+
                     return (pos[0]==x)?on_note:off_note
+
+                else
+    
+                    return '_'.colorize(:color => :light_white, :background => :white)
+                
+                end
+
+            elsif sheet["N"+f.to_s] != nil
+    
+                off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
+                on_note = " "
+    
+                if (sheet["N"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil)
+
+                    return (pos[0]==x)?on_note:off_note
+
                 else
     
                     return '_'.colorize(:color => :light_white, :background => :white)
@@ -212,13 +229,37 @@ def print_cycle(sheet, pos, file, state)
     if str!='q'
         
         note=($note_array[pos[1]%12] + (pos[1]/12).to_s)
+        f=pos[0]+$scroll
 
         if str=='p'
             state = 1
             return play_back(sheet, pos, file, state)
+
         elsif str=='1'
-            f=pos[0]+$scroll
+            note_hash = {note => 1}
+            begin
+                sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
+            rescue
+                sheet["T"+f.to_s]=note_hash
+            end
+
+        elsif str=='2'
             note_hash = {note => 2}
+            begin
+                sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
+
+                begin
+                    sheet["N"+(f+1).to_s]=sheet["N"+(f+1).to_s].merge(note_hash)
+                rescue
+                    sheet["N"+(f+1).to_s]=note_hash
+                end
+            rescue
+                sheet["T"+f.to_s]=note_hash
+                sheet["N"+(f+1).to_s]=note_hash
+            end
+
+        elsif str=='3'
+            note_hash = {note => 3}
             begin
                 sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
             rescue
@@ -226,9 +267,15 @@ def print_cycle(sheet, pos, file, state)
             end
 
         elsif str=='l' 
-            f=pos[0]+$scroll
+
             begin
+                note_type = sheet["T"+f.to_s][note]
                 sheet["T"+f.to_s].delete(note)
+                
+                for j in  1..2**(note_type-1) - 1
+                    sheet["N"+(f+1).to_s].delete(note) 
+                end
+
             rescue
 
             end
@@ -375,3 +422,8 @@ end
 $chord="test"
 
 
+# a=Time.now.to_f
+# sleep(1)
+# b=Time.now.to_f
+
+# puts a-b
