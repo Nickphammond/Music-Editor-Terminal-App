@@ -88,10 +88,13 @@ def page(sheet,x,y, pos, state)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end 
-                else
-                    
-                    return " ".colorize(:color => :light_black, :background => :light_yellow)
                 end
+
+
+
+
+                ## Creates side scrolling between sub-panels
+                return " ".colorize(:color => :light_black, :background => :light_yellow)
             end
         end
 
@@ -142,27 +145,7 @@ def cursor(pos, key)
             $scroll=$scroll-1
         end
         return pos
-    end
-    
-
-
-
-    # if key=='w' && pos[1]!=0
-    #     pos[1]=pos[1]-1
-    #     return pos
-    # elsif key=='s' && pos[1]!=47
-    #     pos[1]=pos[1]+1
-    #     return pos
-    # elsif key=='d' && pos[0]!=99
-    #     pos[0]=pos[0]+1
-    #     return pos
-    # elsif key=='a' && pos[0]!=1 
-    #     pos[0]=pos[0]-1
-    #     return pos
-    # else
-    #     return pos
-    # end
-    
+    end  
 end
 
 
@@ -254,72 +237,6 @@ end
 
 
 
-# def print_cycle(sheet, pos, file, state)
-
-    
-#     output=(print_roll(sheet, pos, state))
-#     system("clear && printf '\e[3J'")
-#     print "\033[2J"
-
-#     print output
-#     sleep(0.1) 
-     
-#     str = (STDIN.getch).to_s
-
-#     if str!='q'
-#         if pos[0]==99 && str=='d'
-#             $scroll=$scroll+1
-
-#         elsif pos[0]==1 && str=='a' && $scroll>0
-#             $scroll=$scroll-1
-#         elsif str=='p'
-#             state = 1
-#             return play_back(sheet, pos, file, state)
-#         elsif str=='1'
-#             f=pos[0]+$scroll
-#             note_hash = {($note_array[pos[1]%12] + (pos[1]/12).to_s) => 2}
-#             begin
-#             sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
-#             rescue
-#                 sheet["T"+f.to_s]=note_hash
-#             end
-
-#         elsif str=='l' 
-#             f=pos[0]+$scroll
-#             begin
-#                 note_hash=($note_array[pos[1]%12] + (pos[1]/12).to_s).to_s
-#                 sheet["T"+f.to_s].delete(note_hash)
-#             rescue
-
-#             end
-#         end
-#         return print_cycle(sheet, cursor(pos, str), file, state)
-#     else
-#         puts "Do you want to save (y/n)?"
-#         ans = $stdin.gets.chomp
-#         if ans!='y' && ans!='n'
-#             puts "Invalid input, please press y or n"
-#             sleep(1)
-#             print_cycle(sheet, pos, file, state)
-#         else
-
-#             if ans=='y'
-#                 if file==nil
-#                     puts "Enter the name you wish to use for your file"
-#                     file=gets.chomp   
-#                 end
-#                 save(sheet, file)
-#             end
-#             puts "Thankyou"
-#             return
-#         end
-#     end
-    
-    
-    
-    
-# end
-
 
 
 def play_back(sheet, pos, file, state)
@@ -334,10 +251,6 @@ def play_back(sheet, pos, file, state)
     f = x + $scroll
     if sheet["T"+f.to_s] != nil
         play_notes(41000, sheet["T"+f.to_s])
-        # if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
-            
-        #     play_note(41000,262.0)
-        # end
     end
     
     
