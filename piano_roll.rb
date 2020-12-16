@@ -92,9 +92,33 @@ def page(sheet,x,y, pos, state)
 
 
 
+                ## Creates red jump 'buttons' for keys 'a'(left), 'd'(right).
 
-                ## Creates side scrolling between sub-panels
-                return " ".colorize(:color => :light_black, :background => :light_yellow)
+                if y>=15 && y<=21 && x>=104 && x<=110
+                    if y==18 && x==107
+                        return "A".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
+                elsif y>=15 && y<=21 && x>=112 && x<=118
+                    if y==18 && x==115
+                        return "D".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
+
+                end
+
+
+
+
+                ## Creates side scrolling between sub-panels.
+                if x>=125 && x<=129
+                    return " ".colorize(:color => :light_white, :background => :light_green)
+                end
+
+                ##Creates yellow background of panel.
+                return " ".colorize(:color => :light_black, :background => :yellow)
             end
         end
 
