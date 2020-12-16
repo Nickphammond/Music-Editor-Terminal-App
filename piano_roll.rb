@@ -23,7 +23,7 @@ end
 
 # method for assigning value to each position of the window
 def page(sheet,x,y, pos, state)
-
+    
     f = x + $scroll
 
     if y==0
@@ -33,7 +33,7 @@ def page(sheet,x,y, pos, state)
 
     else
 
-        if x > 0 && x <= 100
+        if x > 0 && x < 101
             if f>= -3 && f<=0
                 return " ".colorize(:color => :light_black, :background => :light_blue)
     
@@ -58,7 +58,15 @@ def page(sheet,x,y, pos, state)
                 str= $note_array[y%12] + (y/12).to_s + "   "
                 return str.colorize(:color => :light_black, :background => :light_yellow)
             else 
-
+                if y>=4 && y<=6 && x>=107 && x<=109
+                    if y==5 && x==108
+                        return "W".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end
+                else
+                    return " ".colorize(:color => :light_black, :background => :light_yellow)
+                end
             end
         end
 
@@ -69,32 +77,78 @@ end
 
 
 def cursor(pos, key)
-    
-    if key=='w' && pos[1]!=0
-        pos[1]=pos[1]-1
-        return pos
-    elsif key=='s' && pos[1]!=47
-        pos[1]=pos[1]+1
-        return pos
-    elsif key=='d' && pos[0]!=99
-        pos[0]=pos[0]+1
-        return pos
-    elsif key=='a' && pos[0]!=1 
-        pos[0]=pos[0]-1
+
+
+
+    a = pos[0]
+    b = pos[1]
+
+    next_pos = [0,0]
+    next_pos[0] = a
+    next_pos[1] = b
+
+    if key=='w'
+
+        next_pos[1]=pos[1]-1
+
+    elsif key=='s'
+        
+        next_pos[1]=pos[1]+1
+
+    elsif key=='d'
+
+        next_pos[0]=pos[0]+1
+
+    elsif key=='a'
+
+        next_pos[0]=pos[0]-1
+
+    end
+
+  
+
+    if next_pos[0] > 0 && next_pos[0] < 99 && next_pos[1] > 0 && next_pos[1] < 48
+        pos = next_pos
         return pos
     else
+        if pos[0]==98 && key=='d'
+            $scroll=$scroll+1
+        elsif pos[0]==1 && key=='a' && $scroll>0
+            $scroll=$scroll-1
+        end
         return pos
     end
+    
+
+
+
+    # if key=='w' && pos[1]!=0
+    #     pos[1]=pos[1]-1
+    #     return pos
+    # elsif key=='s' && pos[1]!=47
+    #     pos[1]=pos[1]+1
+    #     return pos
+    # elsif key=='d' && pos[0]!=99
+    #     pos[0]=pos[0]+1
+    #     return pos
+    # elsif key=='a' && pos[0]!=1 
+    #     pos[0]=pos[0]-1
+    #     return pos
+    # else
+    #     return pos
+    # end
     
 end
 
 
 
 def print_roll(sheet, pos, state)
+    system("printf '\e[8;60;150t'")
+
     str = "\n\n"
 
     for j in 0..48
-        for i in 0..100
+        for i in 0..130
             z =page(sheet,i,j, pos, state)
             if i==pos[0] && j==pos[1] && z!='_'.colorize(:color => :light_white, :background => :cyan) && z!=" "
                 str= str +  '_'.colorize(:color => :light_white, :background => :light_cyan)
@@ -111,7 +165,6 @@ end
 
 
 
-
 def print_cycle(sheet, pos, file, state)
 
     
@@ -125,19 +178,17 @@ def print_cycle(sheet, pos, file, state)
     str = (STDIN.getch).to_s
 
     if str!='q'
-        if pos[0]==99 && str=='d'
-            $scroll=$scroll+1
+        
+        note=($note_array[pos[1]%12] + (pos[1]/12).to_s)
 
-        elsif pos[0]==1 && str=='a' && $scroll>0
-            $scroll=$scroll-1
-        elsif str=='p'
+        if str=='p'
             state = 1
             return play_back(sheet, pos, file, state)
         elsif str=='1'
             f=pos[0]+$scroll
-            note_hash = {($note_array[pos[1]%12] + (pos[1]/12).to_s) => 2}
+            note_hash = {note => 2}
             begin
-            sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
+                sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
             rescue
                 sheet["T"+f.to_s]=note_hash
             end
@@ -145,12 +196,12 @@ def print_cycle(sheet, pos, file, state)
         elsif str=='l' 
             f=pos[0]+$scroll
             begin
-                note_hash=($note_array[pos[1]%12] + (pos[1]/12).to_s).to_s
-                sheet["T"+f.to_s].delete(note_hash)
+                sheet["T"+f.to_s].delete(note)
             rescue
 
             end
         end
+        
         return print_cycle(sheet, cursor(pos, str), file, state)
     else
         puts "Do you want to save (y/n)?"
@@ -174,9 +225,75 @@ def print_cycle(sheet, pos, file, state)
     end
     
     
-    
-    
 end
+
+
+
+# def print_cycle(sheet, pos, file, state)
+
+    
+#     output=(print_roll(sheet, pos, state))
+#     system("clear && printf '\e[3J'")
+#     print "\033[2J"
+
+#     print output
+#     sleep(0.1) 
+     
+#     str = (STDIN.getch).to_s
+
+#     if str!='q'
+#         if pos[0]==99 && str=='d'
+#             $scroll=$scroll+1
+
+#         elsif pos[0]==1 && str=='a' && $scroll>0
+#             $scroll=$scroll-1
+#         elsif str=='p'
+#             state = 1
+#             return play_back(sheet, pos, file, state)
+#         elsif str=='1'
+#             f=pos[0]+$scroll
+#             note_hash = {($note_array[pos[1]%12] + (pos[1]/12).to_s) => 2}
+#             begin
+#             sheet["T"+f.to_s]=sheet["T"+f.to_s].merge(note_hash)
+#             rescue
+#                 sheet["T"+f.to_s]=note_hash
+#             end
+
+#         elsif str=='l' 
+#             f=pos[0]+$scroll
+#             begin
+#                 note_hash=($note_array[pos[1]%12] + (pos[1]/12).to_s).to_s
+#                 sheet["T"+f.to_s].delete(note_hash)
+#             rescue
+
+#             end
+#         end
+#         return print_cycle(sheet, cursor(pos, str), file, state)
+#     else
+#         puts "Do you want to save (y/n)?"
+#         ans = $stdin.gets.chomp
+#         if ans!='y' && ans!='n'
+#             puts "Invalid input, please press y or n"
+#             sleep(1)
+#             print_cycle(sheet, pos, file, state)
+#         else
+
+#             if ans=='y'
+#                 if file==nil
+#                     puts "Enter the name you wish to use for your file"
+#                     file=gets.chomp   
+#                 end
+#                 save(sheet, file)
+#             end
+#             puts "Thankyou"
+#             return
+#         end
+#     end
+    
+    
+    
+    
+# end
 
 
 
