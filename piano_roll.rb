@@ -33,31 +33,33 @@ def page(sheet,x,y, pos, state)
 
     else
 
-        
-
-        if x==0 
-            
-            str= $note_array[y%12] + (y/12).to_s + "   "
-            return str.colorize(:color => :light_black, :background => :light_yellow)
-
-        elsif f>= -3 && f<=0
-            return " ".colorize(:color => :light_black, :background => :light_blue)
-
-        elsif sheet["T"+f.to_s] != nil
-
-            off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
-            on_note = " "
-
-            if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
-                return (pos[0]==x)?on_note:off_note
+        if x > 0 && x <= 100
+            if f>= -3 && f<=0
+                return " ".colorize(:color => :light_black, :background => :light_blue)
+    
+            elsif sheet["T"+f.to_s] != nil
+    
+                off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
+                on_note = " "
+    
+                if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
+                    return (pos[0]==x)?on_note:off_note
+                else
+    
+                    return '_'.colorize(:color => :light_white, :background => :white)
+                
+                end
+    
             else
-
                 return '_'.colorize(:color => :light_white, :background => :white)
-            
             end
-
         else
-            return '_'.colorize(:color => :light_white, :background => :white)
+            if x==0
+                str= $note_array[y%12] + (y/12).to_s + "   "
+                return str.colorize(:color => :light_black, :background => :light_yellow)
+            else 
+
+            end
         end
 
     end
