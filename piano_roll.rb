@@ -54,17 +54,42 @@ def page(sheet,x,y, pos, state)
                 return '_'.colorize(:color => :light_white, :background => :white)
             end
         else
+        ## This part deals with the non-scrolling part of the console.
+            
             if x==0
+            ## Creates the left hand side index.
                 str= $note_array[y%12] + (y/12).to_s + "   "
                 return str.colorize(:color => :light_black, :background => :light_yellow)
             else 
+            ## Creates right hand side 'button' layout.
+            
+                ## Creates red move 'buttons' for keys 'a'(left), 'd'(right), 'w'(up) and 's'(down).
                 if y>=4 && y<=6 && x>=107 && x<=109
                     if y==5 && x==108
                         return "W".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end
+                elsif y>=7 && y<=9 && x>=104 && x<=106
+                    if y==8 && x==105
+                        return "A".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
+                elsif y>=7 && y<=9 && x>=110 && x<=112
+                    if y==8 && x==111
+                        return "D".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
+                elsif y>=10 && y<=12 && x>=107 && x<=109
+                    if y==11 && x==108
+                        return "S".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
                 else
+                    
                     return " ".colorize(:color => :light_black, :background => :light_yellow)
                 end
             end
