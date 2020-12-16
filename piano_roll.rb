@@ -190,7 +190,6 @@ def play_back(sheet, pos, file, state)
     y = pos[1]
     f = x + $scroll
     if sheet["T"+f.to_s] != nil
-        puts "blah"
         play_notes(41000, sheet["T"+f.to_s])
         # if sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil
             
