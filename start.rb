@@ -1,7 +1,7 @@
 require_relative "piano_roll.rb"
 
 
-position = [98,25]
+position = [20,25]
 
 qfile =  ARGV[0]
 
