@@ -383,15 +383,17 @@ def basic_note(num, chord)
     sample_array = [].fill(0.0, 0, num)
     for i in 0..(num)
         sum = 0.0
+        period_diff = 1.0/$sample_rate
         for k in 0..arr.length()-1
 
             freq = arr[k]
-            period_diff = 1.0/$sample_rate
-            sum = sum + (Math::sin($two_pi*period_pos*freq)/arr.length().to_f)
-            period_pos = period_pos + period_diff
+            
+            sum = sum + (Math::sin($two_pi*period_pos*freq).to_f)/arr.length()
+            
 
         
         end
+        period_pos = period_pos + period_diff
         sample_array[i] = sum
         if period_pos>= 1.0
             period_pos = 0
