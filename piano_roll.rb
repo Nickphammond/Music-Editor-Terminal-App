@@ -421,7 +421,7 @@ def play_notes(num, chord)
     # system("rm #{$chord}.wav")
 end
 
-$chord="test"
+$chord="testt"
 
 
 # a=Time.now.to_f
