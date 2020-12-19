@@ -1,7 +1,13 @@
 
+
+
+
+
 ## Description
 
 This is a terminal app for writing music.
+
+Github : https://github.com/Nickphammond/Terminal-App-Asignment
 
 
 
