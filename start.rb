@@ -33,6 +33,7 @@ else
 
                 puts "\n\n\n\
                     The sheet can be navigated with the cursor using: 'w'(up), 's'(down), 'a'(left) and 'd'(right)\n\
+                    The cursor can be switched with 'r'(step) and 'f'(jump)\n\
                     To place a note at the location of the cursor press: '1'\n\
                     To delete a note at the location of the cursor press: 'l'\n\
                     To start playback of composition press: 'p'\n\
