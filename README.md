@@ -38,6 +38,7 @@ To create a new file pass the desired name of the file as the first command line
 ### Main console
 
 The sheet can be navigated with the cursor using: 'w'(up), 's'(down), 'a'(left) and 'd'(right)
+The cursor can be switched with 'r'(step) and 'f'(jump)
 To place a note at the location of the cursor press: '1'
 To delete a note at the location of the cursor press: 'l'
 To start playback of composition press: 'p'
