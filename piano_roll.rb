@@ -35,42 +35,36 @@ def page(sheet,x,y, pos, state)
     else
 
         if x > 0 && x < 101
+            grid = "_".colorize(:color => :light_white, :background => :white)
+            off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
+            on_note = " "
+            value = grid
             if f>= -3 && f<=0
-                return " ".colorize(:color => :light_black, :background => :light_blue)
+                value =  " ".colorize(:color => :light_black, :background => :light_blue)
     
             elsif sheet["T"+f.to_s] != nil
-    
-                off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
-                on_note = " "
+
     
                 if (sheet["T"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil)
 
-                    return (pos[0]==x)?on_note:off_note
-
-                else
-    
-                    return '_'.colorize(:color => :light_white, :background => :white)
+                    value =  (pos[0]==x)?on_note:off_note
                 
                 end
 
             elsif sheet["N"+f.to_s] != nil
     
-                off_note = " ".colorize(:color => :light_cyan, :background => :light_magenta)
-                on_note = " "
     
                 if (sheet["N"+f.to_s][$note_array[y%12] + (y/12).to_s] != nil)
 
-                    return (pos[0]==x)?on_note:off_note
+                    value =  (pos[0]==x)?on_note:off_note
 
-                else
-    
-                    return '_'.colorize(:color => :light_white, :background => :white)
-                
                 end
+   
     
-            else
-                return '_'.colorize(:color => :light_white, :background => :white)
             end
+
+            return value
+
         else
         ## This part deals with the non-scrolling part of the console.
             
@@ -80,32 +74,32 @@ def page(sheet,x,y, pos, state)
                 return str.colorize(:color => :light_black, :background => :light_yellow)
             else 
             ## Creates right hand side 'button' layout.
-            
+                a = ' '
                 ## Creates red move 'buttons' for keys 'a'(left), 'd'(right), 'w'(up) and 's'(down).
                 if y>=2 && y<=4 && x>=112 && x<=114
                     if y==3 && x==113
-                        return "W".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
+                        a = "W"
                     end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                
                 elsif y>=5 && y<=7 && x>=109 && x<=111
                     if y==6 && x==110
-                        return "A".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "A"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                    
                 elsif y>=5 && y<=7 && x>=115 && x<=117
                     if y==6 && x==116
-                        return "D".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "D"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                   
                 elsif y>=8 && y<=10 && x>=112 && x<=114
                     if y==9 && x==113
-                        return "S".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "S"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                    
                 end
 
 
