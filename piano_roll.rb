@@ -9,6 +9,7 @@ $scroll = -4
 $note_array = [" B", "#A", " A", "#G", " G", "#F", " F", " E", "#D", " D", "#C", " C"]
 $two_pi = 2* Math::PI
 $sample_rate = 44100
+$jump = 0
 
 
 system("clear && printf '\e[3J'")
@@ -81,26 +82,26 @@ def page(sheet,x,y, pos, state)
             ## Creates right hand side 'button' layout.
             
                 ## Creates red move 'buttons' for keys 'a'(left), 'd'(right), 'w'(up) and 's'(down).
-                if y>=4 && y<=6 && x>=107 && x<=109
-                    if y==5 && x==108
+                if y>=2 && y<=4 && x>=112 && x<=114
+                    if y==3 && x==113
                         return "W".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end
-                elsif y>=7 && y<=9 && x>=104 && x<=106
-                    if y==8 && x==105
+                elsif y>=5 && y<=7 && x>=109 && x<=111
+                    if y==6 && x==110
                         return "A".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end 
-                elsif y>=7 && y<=9 && x>=110 && x<=112
-                    if y==8 && x==111
+                elsif y>=5 && y<=7 && x>=115 && x<=117
+                    if y==6 && x==116
                         return "D".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end 
-                elsif y>=10 && y<=12 && x>=107 && x<=109
-                    if y==11 && x==108
+                elsif y>=8 && y<=10 && x>=112 && x<=114
+                    if y==9 && x==113
                         return "S".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
@@ -111,31 +112,55 @@ def page(sheet,x,y, pos, state)
 
                 ## Creates red jump 'buttons' for keys 'a'(left), 'd'(right).
 
-                if y>=15 && y<=21 && x>=104 && x<=110
-                    if y==18 && x==107
+                if y>=18 && y<=22 && x>=103 && x<=109
+                    if y==20 && x==106
                         return "A".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end 
-                elsif y>=15 && y<=21 && x>=112 && x<=118
-                    if y==18 && x==115
+                elsif y>=18 && y<=22 && x>=117 && x<=123
+                    if y==20 && x==120
                         return "D".colorize(:color => :light_white, :background => :light_red)
                     else
                         return " ".colorize(:color => :light_white, :background => :light_red)
                     end 
-
+                elsif y>=13 && y<=17 && x>=110 && x<=116
+                    if y==15 && x==113
+                        return "W".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
+        
+                elsif y>=23 && y<=27 && x>=110 && x<=116
+                    if y==25 && x==113
+                        return "S".colorize(:color => :light_white, :background => :light_red)
+                    else
+                        return " ".colorize(:color => :light_white, :background => :light_red)
+                    end 
                 end
 
 
 
 
                 ## Creates side scrolling between sub-panels.
-                if x>=125 && x<=129
-                    return " ".colorize(:color => :light_white, :background => :light_green)
+                if x>=125 && x<=129 && y>=1 && y<=12
+                    a = ' '
+                    if x==127 && y==6
+                        a='r'
+                    end
+                    return ($jump==0)? a.colorize(:color => :black, :background => :light_cyan) : a.colorize(:color => :black, :background => :cyan)
+                    
+                elsif x>=125 && x<=129 && y>=13 && y<=27
+                    a = ' '
+                    if x==127 && y==18
+                        a='f'
+                    end
+                    return ($jump==1)? a.colorize(:color => :black, :background => :light_cyan) : a.colorize(:color => :black, :background => :cyan)
+                    
                 end
 
                 ##Creates yellow background of panel.
-                return " ".colorize(:color => :light_black, :background => :yellow)
+                return " ".colorize(:color => :light_black, :background => :light_yellow)
             end
         end
 
@@ -158,36 +183,59 @@ def cursor(pos, key)
 
     if key=='w'
 
-        next_pos[1]=pos[1]-1
+        next_pos[1]=pos[1]-1 - $jump*4
 
     elsif key=='s'
         
-        next_pos[1]=pos[1]+1
+        next_pos[1]=pos[1]+1 + $jump*4
 
     elsif key=='d'
 
-        next_pos[0]=pos[0]+1
+        next_pos[0]=pos[0]+1 + $jump*25
 
     elsif key=='a'
 
-        next_pos[0]=pos[0]-1
+        next_pos[0]=pos[0]-1 - $jump*25
 
     end
 
+ 
   
-
     if next_pos[0] > 0 && next_pos[0] < 99 && next_pos[1] > 0 && next_pos[1] < 48
         pos = next_pos
         return pos
     else
-        if pos[0]==98 && key=='d'
-            $scroll=$scroll+1
-        elsif pos[0]==1 && key=='a' && $scroll>0
-            $scroll=$scroll-1
+        if pos[0]<=98 && pos[0]>=99-24*$jump && key=='d'
+            $scroll=$scroll+(next_pos[0]-pos[0])
+        elsif pos[0]>=1 && next_pos[0]<=0 && $scroll+next_pos[0]>0&& key=='a'
+            if $scroll>100
+                $scroll=$scroll-100
+                pos[0]=100+ next_pos[0]
+            else 
+                $scroll=-4
+                pos[0]= 99+ next_pos[0]
+            end
         end
+     
         return pos
     end  
+
+
+    # if next_pos[0] > 0 && next_pos[0] < 99 && next_pos[1] > 0 && next_pos[1] < 48
+    #     pos = next_pos
+    #     return pos
+    # else
+    #     if pos[0]==98 && key=='d'
+    #         $scroll=$scroll+1
+    #     elsif pos[0]==1 && key=='a' && $scroll>0
+    #         $scroll=$scroll-1
+    #     end
+    #     return pos
+    # end  
 end
+
+
+
 
 
 
@@ -277,8 +325,13 @@ def print_cycle(sheet, pos, file, state)
                 end
 
             rescue
-
+                puts "Make sure the cursor is positioned over the note you wish to delete"
             end
+
+        elsif str=='r'||str=='f'
+            
+            $jump = (str=='r')?0:1
+            
         end
         
         return print_cycle(sheet, cursor(pos, str), file, state)
