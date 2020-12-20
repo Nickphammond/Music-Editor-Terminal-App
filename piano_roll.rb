@@ -113,30 +113,32 @@ def page(sheet,x,y, pos, state)
                 ## Creates red jump 'buttons' for keys 'a'(left), 'd'(right).
 
                 if y>=18 && y<=22 && x>=103 && x<=109
+                    a = ' '
                     if y==20 && x==106
-                        return "A".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a =  "A"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                    
                 elsif y>=18 && y<=22 && x>=117 && x<=123
+                    a = ' '
                     if y==20 && x==120
-                        return "D".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "D"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
+                  
                 elsif y>=13 && y<=17 && x>=110 && x<=116
+                    a = ' '
                     if y==15 && x==113
-                        return "W".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "W"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
         
                 elsif y>=23 && y<=27 && x>=110 && x<=116
+                    a = ' '
                     if y==25 && x==113
-                        return "S".colorize(:color => :light_white, :background => :light_red)
-                    else
-                        return " ".colorize(:color => :light_white, :background => :light_red)
-                    end 
+                        a = "S"
+                    end
+                    return a.colorize(:color => :light_white, :background => :light_red)
                 end
 
 
@@ -181,6 +183,9 @@ def cursor(pos, key)
     next_pos[0] = a
     next_pos[1] = b
 
+    key_array = ['w', 's', 'd', 'a']
+
+
     if key=='w'
 
         next_pos[1]=pos[1]-1 - $jump*4
@@ -205,7 +210,7 @@ def cursor(pos, key)
         pos = next_pos
         return pos
     else
-        if pos[0]<=98 && pos[0]>=99-24*$jump && key=='d'
+        if pos[0]<=98 && pos[0]>=99-1-25*$jump && key=='d'
             $scroll=$scroll+(next_pos[0]-pos[0])
         elsif pos[0]>=1 && next_pos[0]<=0 && $scroll+next_pos[0]>0&& key=='a'
             if $scroll>100
@@ -220,18 +225,6 @@ def cursor(pos, key)
         return pos
     end  
 
-
-    # if next_pos[0] > 0 && next_pos[0] < 99 && next_pos[1] > 0 && next_pos[1] < 48
-    #     pos = next_pos
-    #     return pos
-    # else
-    #     if pos[0]==98 && key=='d'
-    #         $scroll=$scroll+1
-    #     elsif pos[0]==1 && key=='a' && $scroll>0
-    #         $scroll=$scroll-1
-    #     end
-    #     return pos
-    # end  
 end
 
 
