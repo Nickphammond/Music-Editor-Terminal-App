@@ -440,6 +440,8 @@ def basic_note(num, chord)
         end
     end
 
+    # puts sample_array
+    # sleep(10)
     return sample_array
 end
 
@@ -456,16 +458,22 @@ end
 
 def play_notes(num, chord)
     make_file(num, chord)
+
+    begin
+        status = Timeout::timeout(0.25){
     
-    system("open #{$chord}.wav")
-    # system("rm #{$chord}.wav")
+            system("afplay #{$chord}.wav")
+    
+        }
+    rescue
+        
+    end
+
 end
 
 $chord="testt"
 
 
-# a=Time.now.to_f
-# sleep(1)
-# b=Time.now.to_f
 
-# puts a-b
+
+
