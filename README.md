@@ -58,6 +58,12 @@ To run the program there are two ways:
     ``$ ruby start.rb my_composition``
 
     If a file my_composition.txt exists within the working directory, this will open this file in the application.
+
+    For example there is a demo file you can play called test.txt. 
+    To play it, enter the command:
+
+    ``$ ruby start.rb test``
+
     Otherwise, it will generate a NEW text file, my_composition.txt, which will then be opened in th application.
 
     (Please note that 
